@@ -3,13 +3,15 @@ description: 'Get started with Node actions'
 author: 'GitHub'
 inputs:
   platform:
-    description: 'Platform to notify'
-    default: 'Slack'
+    description: 'target platform'
+    default: 'slack'
   message:
-    description: 'Message to send suffixed with PR link'
-    default: 'This pull request is approved and ready to merge: '
+    description: 'message to send'
   webhook:
-    description: 'URL or webhook to send the message to'
+    description: 'webhook URL'
+  debug:
+    description: 'Enable debug output - *MUST* also set secret ACTIONS_STEP_DEBUG to "true"'
+    default: false
 runs:
   using: 'node12'
   main: 'lib/main.js'

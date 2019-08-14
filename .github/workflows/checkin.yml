@@ -17,6 +17,7 @@ jobs:
       run: npm run test
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
 
     - name: "check for uncommitted changes"
       # Ensure no changes, but ignore node_modules dir since dev/fresh ci deps installed.

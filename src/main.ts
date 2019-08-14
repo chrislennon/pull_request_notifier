@@ -1,68 +1,34 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github';
-import { SlackClient } from './slack'
+import * as github from '@actions/github'
+import { IncomingWebhook } from '@slack/webhook'
+import { inspect } from 'util'
 
-async function run() {
+export async function run(url, message) {
   try {
-    const prNumber = getPrNumber()
+    const webhook = new IncomingWebhook(url, {
+      icon_emoji: ':bowtie:',
+    })
 
-    const run = new Runner(
-      core.getInput('platform'),
-      `core.getInput('message') ${prNumber}`,
-      core.getInput('webhook')
-    )
+    const response = await webhook.send({
+      text: message,
+    })
 
-    run.sendToSlack()
+    let stdResponse = false
+    if (response.text == '1' || response.text === 'ok' )  stdResponse = true
+    return stdResponse
 
   } catch (error) {
-    core.error(error);
-    core.setFailed(error.message);
+    core.error(error)
+    core.setFailed(error.message)
   }
 }
 
-function getPrNumber(): number | boolean {
-  const pullRequest = github.context.payload.pull_request;
-  if (!pullRequest) {
-    return false;
-  }
-  return pullRequest.number;
-}
+if (core.getInput('debug') === 'true') core.debug(inspect(github.context, {showHidden: false, depth: null}))
 
-export class Runner {
-  private readonly notifyPlatform: string
-  private readonly notifyMessage: string
-  private readonly notifyWebhook: string
+// if (github.context.payload){
+//   run(
+//     core.getInput('webhook'),
+//     core.getInput('message')
+//   )
+// }
 
-  public constructor(platform, message, token) {
-    this.notifyPlatform = platform
-    this.notifyMessage = message
-    this.notifyWebhook = token
-  }
-
-  public async basic() {
-    try {
-      const output = `Hello ${this.notifyPlatform}`
-      return output
-    } catch (error) {
-      core.setFailed(error.message);
-    }
-  }
-
-  public async message() {
-    try {
-      const output = `${this.notifyMessage}`
-      return output
-    } catch (error) {
-      core.setFailed(error.message);
-    }
-  }
-
-  public async sendToSlack() {
-    const slackWeb = new SlackClient(this.notifyMessage,this.notifyWebhook)
-    const result = await slackWeb.sendMessage()
-    console.log(result)
-    console.log(`Sent message to ${this.notifyPlatform}`);
-    return result
-  }
-
-}
