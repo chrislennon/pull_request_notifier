@@ -16,7 +16,7 @@ jobs:
     - name: "npm run test"
       run: npm run test
       env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
 
     - name: "check for uncommitted changes"
