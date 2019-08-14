@@ -1,10 +1,15 @@
-name: 'Node 12 Template Action'
+name: 'Pull Request Review Notify'
 description: 'Get started with Node actions'
 author: 'GitHub'
-inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+inputs:
+  platform:
+    description: 'Platform to notify'
+    default: 'Slack'
+  message:
+    description: 'Message to send suffixed with PR link'
+    default: 'This pull request is approved and ready to merge: '
+  webhook:
+    description: 'URL or webhook to send the message to'
 runs:
   using: 'node12'
   main: 'lib/main.js'
